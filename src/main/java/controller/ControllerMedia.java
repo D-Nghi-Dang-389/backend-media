@@ -28,17 +28,12 @@ public class ControllerMedia {
         return serviceMedia.addMedia(media);
     }
 
-    // retrieves all the movies and tv shows in the database
-    // @GetMapping
-    // public ResponseEntity<List<Movie>> getAllMoviesTvs() {
-    // List<Movie> movies = movieService.getAllMoviesTvs();
-    // return ResponseEntity.ok(movies != null ? movies : List.of());
-    // }
+    
 
         // 2- retrieves all the movies in the database
-    @GetMapping("/movie")
-    public ResponseEntity<List<Media>> getAllMovies() {
-        return ResponseEntity.ok(serviceMedia.getAllMovies());
+    @GetMapping()
+    public ResponseEntity<List<Media>> getAllMedia() {
+        return ResponseEntity.ok(serviceMedia.getAllMedia());
     }
 
 }

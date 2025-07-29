@@ -21,9 +21,9 @@ public class ServiceMedia {
 
     }
 
-    public List<Media> getAllMovies(Media media) {
+    public List<Media> getAllMedia() {
         return repositoryMedia.findAll();
     }
 
-    public 
+     
 }
