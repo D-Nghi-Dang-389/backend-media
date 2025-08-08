@@ -1,6 +1,7 @@
 package CJV.movie_management.controller;
 
 import CJV.movie_management.model.User;
+import CJV.movie_management.repository.RepositoryUser;
 import CJV.movie_management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/users")
 public class UserController {
+
+    @Autowired
+    private RepositoryUser repositoryUser;
 
     @Autowired
     private UserService userService;
@@ -32,18 +37,23 @@ public class UserController {
     // 2. Login a user (/users/login)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginData) {
-        // Validate incoming fields
         if (loginData.getEmail() == null || loginData.getPassword() == null) {
             return ResponseEntity.badRequest().body("Email and password are required.");
         }
 
-        boolean authenticated = userService.authenticate(loginData.getEmail(), loginData.getPassword());
+        Optional<User> userOpt = repositoryUser.findByEmail(loginData.getEmail());
 
-        if (authenticated) {
-            return ResponseEntity.ok("Login successful");
-        } else {
-            return ResponseEntity.status(401).body("Invalid email or password");
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            boolean authenticated = userService.authenticate(user.getEmail(), loginData.getPassword());
+
+            if (authenticated) {
+                user.setPassword(null);
+                return ResponseEntity.ok(user);
+            }
         }
+
+        return ResponseEntity.status(401).body("Invalid email or password");
     }
 
     // 3. Get user by ID (/users/{id})
